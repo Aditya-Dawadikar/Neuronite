@@ -3,10 +3,18 @@
 #include "activation_sigmoid.hpp"
 #include <cmath>
 
+/// Static sigmoid function
+/// σ(x) = 1 / (1 + e^(-x))
 double ActivationSigmoid::sigmoid(double x){
     return 1.0 / (1.0 + std::exp(-x));
 }
 
+/// Forward pass for sigmoid activation
+/// For each input x, computes:
+///     y = σ(x) = 1 / (1 + e^(-x))
+///
+/// Also stores the output σ(x) in `output_cache`
+/// for use in the backward pass.
 Matrix ActivationSigmoid::forward(const Matrix& input){
     Matrix output = Matrix(input.rows, input.cols);
 
@@ -21,6 +29,12 @@ Matrix ActivationSigmoid::forward(const Matrix& input){
     return output;
 }
 
+/// Backward pass for sigmoid
+/// Given upstream gradient dL/dy, computes:
+///     dL/dx = dL/dy * σ(x) * (1 - σ(x))
+///
+/// This uses the derivative of the sigmoid function:
+///     dσ/dx = σ(x) * (1 - σ(x))
 Matrix ActivationSigmoid::backward(const Matrix& grad_output){
     Matrix grad_input = Matrix(grad_output.rows, output_cache.cols);
 
@@ -33,6 +47,7 @@ Matrix ActivationSigmoid::backward(const Matrix& grad_output){
     return grad_input;
 }
 
+/// No-op update — sigmoid has no learnable parameters
 void ActivationSigmoid::update(double learning_rate){
     return;
 }

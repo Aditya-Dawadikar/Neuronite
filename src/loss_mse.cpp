@@ -2,6 +2,14 @@
 #include "loss_mse.hpp"
 #include <cmath>
 
+/// Forward pass for Mean Squared Error (MSE) loss
+///
+/// MSE = (1 / n) * Σ (y_pred - y_true)^2
+/// where:
+///     y_pred = predicted output
+///     y_true = ground truth (target)
+///
+/// Also caches the prediction and target for use in the backward pass.
 double LossMSE::forward(const Matrix& prediction, const Matrix& target){
 
     if(prediction.rows!=target.rows || prediction.cols!=target.cols){
@@ -26,6 +34,12 @@ double LossMSE::forward(const Matrix& prediction, const Matrix& target){
     return loss;
 }
 
+/// Backward pass for MSE loss
+///
+/// Gradient of MSE with respect to prediction:
+///     dL/dy_pred = (2 / n) * (y_pred - y_true)
+///
+/// Returns matrix of gradients with the same shape as the prediction
 Matrix LossMSE::backward(){
     Matrix grad_input = Matrix(prediction_cache.rows, prediction_cache.cols);
 
