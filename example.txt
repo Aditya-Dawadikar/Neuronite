@@ -1,0 +1,56 @@
+#include <iostream>
+#include <matrix.hpp>
+#include <dense_layer.hpp>
+#include <utils_random.hpp>
+#include <activation_relu.hpp>
+#include <activation_sigmoid.hpp>
+#include <loss_mse.hpp>
+#include <model.hpp>
+
+int main(){
+    std::cout<<"Neuronite Initialized!"<<std::endl;
+
+    // Step 1: Input and Target (simple 2D XOR-style sample)
+    Matrix input({
+        {0.0, 0.0},
+        {0.0, 1.0},
+        {1.0, 0.0},
+        {1.0, 1.0}
+    });
+
+    Matrix target({
+        {0.0},
+        {1.0},
+        {1.0},
+        {0.0}
+    });
+
+    // Step 2: Build model: 2 → 4 → 1
+    Model model;
+    model.add(new DenseLayer(2, 4));
+    model.add(new ActivationReLU());
+    model.add(new DenseLayer(4, 1));
+    model.add(new ActivationSigmoid());
+
+    LossMSE loss;
+
+    // Step 3: Training loop (few epochs for sanity check)
+    double lr = 0.1;
+
+    for (int epoch = 1; epoch <= 500; ++epoch) {
+        Matrix prediction = model.forward(input);
+        double loss_value = loss.forward(prediction, target);
+        Matrix grad = loss.backward();
+        model.backward(grad);
+        model.update(lr);
+
+        std::cout << "Epoch " << epoch << " | Loss: " << loss_value << "\n";
+    }
+
+    // Final output
+    Matrix final_output = model.forward(input);
+    std::cout << "\nFinal Predictions:\n";
+    final_output.print();
+
+    return 0;
+}
