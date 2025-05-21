@@ -1,13 +1,14 @@
-#ifndef ACTIVATION_HPP
-#define ACTIVATION_HPP
+#ifndef LAYER_HPP
+#define LAYER_HPP
 
 #include "matrix.hpp"
 
-class Activation{
+class Layer{
     public:
         virtual Matrix forward(const Matrix& input) = 0;
         virtual Matrix backward(const Matrix& grad_output) = 0;
-        virtual ~Activation() = default;
+        virtual void update(double learning_rate) = 0;
+        virtual ~Layer() = default;
 };
 
 #endif

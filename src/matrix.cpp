@@ -22,8 +22,6 @@ Matrix Matrix::row_wise_sum() const{
 }
 
 Matrix Matrix::dot(const Matrix& A, const Matrix& B){
-    std::cout << "Dot: A(" << A.rows << "x" << A.cols << "), "
-              << "B(" << B.rows << "x" << B.cols << ")" << std::endl;
 
     if (A.cols != B.rows){
         throw std::invalid_argument("Dot: Incompatible dimensions");

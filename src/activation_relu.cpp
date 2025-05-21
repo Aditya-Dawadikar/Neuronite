@@ -17,8 +17,8 @@ Matrix ActivationReLU::forward(const Matrix& input){
         }
     }
 
-    std::cout << "Mask:\n";
-    mask.print();
+    // std::cout << "Mask:\n";
+    // mask.print();
 
     return output;
 }
@@ -31,4 +31,8 @@ Matrix ActivationReLU::backward(const Matrix& grad_output){
         }
     }
     return grad_input;
+}
+
+void ActivationReLU::update(double learning_rate){
+    return;
 }

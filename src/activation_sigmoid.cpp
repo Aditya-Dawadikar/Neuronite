@@ -32,3 +32,7 @@ Matrix ActivationSigmoid::backward(const Matrix& grad_output){
 
     return grad_input;
 }
+
+void ActivationSigmoid::update(double learning_rate){
+    return;
+}

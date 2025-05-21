@@ -2,8 +2,9 @@
 #define DENSELAYER_HPP
 
 #include <matrix.hpp>
+#include "layer.hpp"
 
-class DenseLayer{
+class DenseLayer: public Layer{
     private:
         Matrix weights;
         Matrix bias;
@@ -15,10 +16,9 @@ class DenseLayer{
     public:
         DenseLayer(int input_dim, int output_dim);
 
-        Matrix forward(const Matrix& input);
-        Matrix backward(const Matrix& grad_output);
-
-        void update(double learning_rate);
+        Matrix forward(const Matrix& input) override;
+        Matrix backward(const Matrix& grad_output) override;
+        void update(double learning_rate) override;
 
         Matrix get_weights() const;
         Matrix get_bias() const; 

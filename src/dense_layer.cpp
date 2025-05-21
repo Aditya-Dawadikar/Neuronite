@@ -1,6 +1,7 @@
 #include "matrix.hpp"
 #include "dense_layer.hpp"
 #include "utils_random.hpp"
+#include <cmath>
 
 // DenseLayer constructor
 // Initializes weights and biases, and allocates memory for gradients
@@ -13,7 +14,9 @@ DenseLayer:: DenseLayer(int input_dim, int output_dim)
         bias(1, output_dim),
         d_weights(input_dim, output_dim),
         d_bias(1, output_dim){
-    initialize_random(weights, -1, 1);
+    
+    double limit = std::sqrt(6.0 / (input_dim + output_dim));
+    initialize_random(weights, -1*limit, 1*limit);
 }
 
 // Forward pass of the dense layer
