@@ -1,7 +1,10 @@
 #include "model.hpp"
 #include "layer.hpp"
+#include "loss.hpp"
+#include "optimizer.hpp"
 #include <iomanip>
 #include <iostream>
+#include <limits>
 
 /// Adds a layer to the model
 /// Layers are stored in a sequential order for forward and backward chaining
@@ -42,6 +45,75 @@ Matrix Model::backward(const Matrix& grad_output){
 void Model::update(double learning_rate){
     for(auto& layer: layers){
         layer->update(learning_rate);
+    }
+}
+
+double Model::compute_accuracy(const Matrix& prediction, const Matrix& target) {
+    int correct = 0;
+    int total = prediction.rows;
+
+    for (int i = 0; i < total; ++i) {
+        double pred = prediction.data[i][0];
+        double true_val = target.data[i][0];
+
+        // Binary threshold
+        int predicted_class = (pred >= 0.5) ? 1 : 0;
+        int true_class = (true_val >= 0.5) ? 1 : 0;
+
+        if (predicted_class == true_class) {
+            correct++;
+        }
+    }
+
+    return static_cast<double>(correct) / total;
+}
+
+void Model::train(const Matrix& input,
+                  const Matrix& target,
+                  Loss& loss_fn,
+                  Optimizer& optimizer,
+                  int epochs,
+                  int patience) {
+    
+    double best_loss = std::numeric_limits<double>::infinity();
+    int epochs_without_improvement = 0;
+
+    for (int epoch = 0; epoch < epochs; ++epoch) {
+        // Forward pass
+        Matrix prediction = this->forward(input);
+
+        // Loss computation
+        double loss = loss_fn.forward(prediction, target);
+
+        // Backward pass
+        Matrix grad = loss_fn.backward();
+        this->backward(grad);
+
+        // Optimizer step for each layer
+        for (auto& layer : layers) {
+            optimizer.step(layer, epoch + 1);
+        }
+
+        // Logging
+        double acc = Model::compute_accuracy(prediction, target);
+        std::cout << "Epoch " << epoch
+                << " | Loss: " << loss
+                << " | Accuracy: " << std::fixed << std::setprecision(4)
+                << acc * 100 << "%\n";
+
+        // Early stopping logic
+        if (loss < best_loss - 1e-6) {
+            best_loss = loss;
+            epochs_without_improvement = 0;
+        } else {
+            epochs_without_improvement++;
+        }
+
+        if (epochs_without_improvement >= patience) {
+            std::cout << "Early stopping at epoch " << epoch
+                      << " (best loss = " << best_loss << ")\n";
+            break;
+        }
     }
 }
 

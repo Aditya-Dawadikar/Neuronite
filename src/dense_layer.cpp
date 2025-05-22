@@ -106,3 +106,8 @@ int DenseLayer::param_count() const{
     int output_dim = output_shape.second;
     return input_dim*output_dim + output_dim;
 }
+
+void DenseLayer::apply_adam_update(const Matrix& new_weights, const Matrix& new_bias) {
+    weights = new_weights;
+    bias = new_bias;
+}
