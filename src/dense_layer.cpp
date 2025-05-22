@@ -26,12 +26,16 @@ DenseLayer:: DenseLayer(int input_dim, int output_dim)
 Matrix DenseLayer:: forward(const Matrix& input){
     // Cache input for use in backward pass
     input_cache = input;
+    input_shape = {input.rows, input.cols};
 
     // Matrix multiplication: (batch_size × input_dim) · (input_dim × output_dim)
     Matrix output = Matrix::dot(input, weights);
 
     // Broadcast and add bias: bias is (1 × output_dim)
     output = output + bias;
+
+    output_shape = {output.rows, output.cols};
+
     return output;
 }
 
@@ -83,4 +87,22 @@ Matrix DenseLayer:: get_d_weights() const{
 
 Matrix DenseLayer:: get_d_bias() const{
     return d_bias;
+}
+
+std::string DenseLayer:: get_name() const {
+    return "Dense("+std::to_string(weights.rows)+" -> "+std::to_string(weights.cols)+")";
+}
+
+std::pair<int,int> DenseLayer::get_input_shape() const {
+    return input_shape;
+}
+
+std::pair<int,int> DenseLayer::get_output_shape() const {
+    return output_shape;
+}
+
+int DenseLayer::param_count() const{
+    int input_dim = input_shape.second;
+    int output_dim = output_shape.second;
+    return input_dim*output_dim + output_dim;
 }

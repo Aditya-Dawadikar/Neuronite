@@ -14,6 +14,7 @@ class Model{
         Matrix forward(const Matrix& loss_grad);
         Matrix backward(const Matrix& loss_grad);
         void update(double learning_rate);
+        void summarize(int input_dim);
 };
 
 #endif

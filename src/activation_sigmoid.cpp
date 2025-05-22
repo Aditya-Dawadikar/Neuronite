@@ -18,6 +18,8 @@ double ActivationSigmoid::sigmoid(double x){
 Matrix ActivationSigmoid::forward(const Matrix& input){
     Matrix output = Matrix(input.rows, input.cols);
 
+    input_shape = {input.rows, input.cols};
+
     for(int i=0;i<input.rows;++i){
         for(int j=0;j<input.cols;++j){
             output.data[i][j] = ActivationSigmoid::sigmoid(input.data[i][j]);
@@ -50,4 +52,21 @@ Matrix ActivationSigmoid::backward(const Matrix& grad_output){
 /// No-op update — sigmoid has no learnable parameters
 void ActivationSigmoid::update(double learning_rate){
     return;
+}
+
+
+std::string ActivationSigmoid:: get_name() const {
+    return "Sigmoid";
+}
+
+std::pair<int,int> ActivationSigmoid::get_input_shape() const {
+    return input_shape;
+}
+
+std::pair<int,int> ActivationSigmoid::get_output_shape() const {
+    return input_shape;
+}
+
+int ActivationSigmoid::param_count() const{
+    return 0;
 }

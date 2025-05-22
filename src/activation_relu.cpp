@@ -12,6 +12,8 @@ Matrix ActivationReLU::forward(const Matrix& input){
     Matrix output = Matrix(input.rows, input.cols);
     mask = Matrix(input.rows, input.cols);
 
+    input_shape = {input.rows, input.cols};
+
     for(int i=0;i<input.rows;++i){
         for(int j=0;j<input.cols;++j){
             output.data[i][j] = std::max(0.0, input.data[i][j]);
@@ -49,4 +51,21 @@ Matrix ActivationReLU::backward(const Matrix& grad_output){
 /// No-op for ReLU — it has no learnable parameters
 void ActivationReLU::update(double learning_rate){
     return;
+}
+
+
+std::string ActivationReLU:: get_name() const {
+    return "ReLU";
+}
+
+std::pair<int,int> ActivationReLU::get_input_shape() const {
+    return input_shape;
+}
+
+std::pair<int,int> ActivationReLU::get_output_shape() const {
+    return input_shape;
+}
+
+int ActivationReLU::param_count() const{
+    return 0;
 }

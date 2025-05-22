@@ -1,5 +1,7 @@
 #include "model.hpp"
 #include "layer.hpp"
+#include <iomanip>
+#include <iostream>
 
 /// Adds a layer to the model
 /// Layers are stored in a sequential order for forward and backward chaining
@@ -41,4 +43,46 @@ void Model::update(double learning_rate){
     for(auto& layer: layers){
         layer->update(learning_rate);
     }
+}
+
+void Model::summarize(int input_dim){
+    // Step 1: Run dummy forward
+    Matrix dummy_input(1, input_dim);  // [1 × input_dim], batch size = 1
+    for (auto& row : dummy_input.data)
+        std::fill(row.begin(), row.end(), 0.0);  // optional: fill with 0s
+
+    this->forward(dummy_input);  // populates input/output shapes in layers
+
+    // Step 2: Print header
+    std::cout << "# Model Summary\n";
+    std::cout << "──────────────────────────────────────────────────────────────\n";
+    std::cout << std::left
+              << std::setw(20) << "Layer (type)"
+              << std::setw(18) << "Input Shape"
+              << std::setw(18) << "Output Shape"
+              << std::setw(10) << "Param #" << "\n";
+    std::cout << "==============================================================\n";
+
+    int total_params = 0;
+
+    for (const auto& layer : layers) {
+        auto in_shape = layer->get_input_shape();
+        auto out_shape = layer->get_output_shape();
+        int params = layer->param_count();
+
+        std::string in_shape_str = "[" + std::to_string(in_shape.first) + " × " + std::to_string(in_shape.second) + "]";
+        std::string out_shape_str = "[" + std::to_string(out_shape.first) + " × " + std::to_string(out_shape.second) + "]";
+
+        std::cout << std::left
+                  << std::setw(20) << layer->get_name()
+                  << std::setw(18) << in_shape_str
+                  << std::setw(18) << out_shape_str
+                  << std::setw(10) << params << "\n";
+
+        total_params += params;
+    }
+
+    std::cout << "──────────────────────────────────────────────────────────────\n";
+    std::cout << "Total Parameters: " << total_params << "\n";
+    std::cout << "\n";
 }
