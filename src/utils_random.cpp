@@ -16,3 +16,10 @@ void initialize_random(Matrix &mat, double min, double max){
         }
     }
 }
+
+double random_double(double min, double max) {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(min, max);
+    return dis(gen);
+}
