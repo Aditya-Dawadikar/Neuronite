@@ -6,10 +6,19 @@ Matrix::Matrix():rows(0),cols(0),data() {}
 Matrix::Matrix(int rows, int cols)
     : rows(rows), cols(cols), data(rows, std::vector<double>(cols, 0.0)) {}
 
+Matrix::Matrix(int rows, int cols, double init_val)
+    : rows(rows), cols(cols), data(rows, std::vector<double>(cols, 0.0)) {
+        for (int i=0;i<rows;++i){
+            for(int j=0;j<cols;++j){
+                data[i][j] = init_val;
+            }
+        }
+    }
+
 Matrix::Matrix(const std::vector<std::vector<double>>& values)
     : rows(values.size()), cols(values[0].size()), data(values) {}
 
-Matrix Matrix::row_wise_sum() const{
+Matrix Matrix::col_sum() const{
     Matrix result = Matrix(1,cols);
 
     for(int i=0;i<rows;++i){

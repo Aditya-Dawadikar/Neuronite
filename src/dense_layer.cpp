@@ -53,7 +53,7 @@ Matrix DenseLayer:: backward(const Matrix& grad_output){
     d_weights = Matrix::dot(input_cache.transpose(),grad_output);
 
     // ∂L/∂b = row-wise sum of grad_output
-    d_bias = grad_output.row_wise_sum();
+    d_bias = grad_output.col_sum();
 
     // ∂L/∂X = grad_output · weightsᵗ
     Matrix grad_input = Matrix::dot(grad_output, weights.transpose());
