@@ -6,9 +6,12 @@
 #include <activation_sigmoid.hpp>
 #include <loss_mse.hpp>
 #include <model.hpp>
+#include <adam_optimizer.hpp>
 
 int main(){
     std::cout<<"Neuronite Initialized!"<<std::endl;
+
+    set_random_seed(42);
 
     // Step 1: Input and Target (simple 2D XOR-style sample)
     Matrix input({
@@ -32,20 +35,13 @@ int main(){
     model.add(new DenseLayer(4, 1));
     model.add(new ActivationSigmoid());
 
+    model.summarize(2);
+
     LossMSE loss;
+    AdamOptimizer optimizer(0.01);
+    int epochs = 500;
 
-    // Step 3: Training loop (few epochs for sanity check)
-    double lr = 0.1;
-
-    for (int epoch = 1; epoch <= 500; ++epoch) {
-        Matrix prediction = model.forward(input);
-        double loss_value = loss.forward(prediction, target);
-        Matrix grad = loss.backward();
-        model.backward(grad);
-        model.update(lr);
-
-        std::cout << "Epoch " << epoch << " | Loss: " << loss_value << "\n";
-    }
+    model.train(input, target, loss, optimizer, epochs);
 
     // Final output
     Matrix final_output = model.forward(input);
